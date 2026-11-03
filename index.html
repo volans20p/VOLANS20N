@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101820">
+  <meta name="description" content="Prosty kalkulator robocizny, dojazdów i kosztów zlecenia.">
+  <title>Kalkulator zlecenia — Warsztat</title>
+  <style>
+    :root{color-scheme:dark;--bg:#101820;--panel:#192630;--panel2:#22323e;--text:#f2f5f7;--muted:#a9b8c2;--line:#344754;--accent:#f3b544;--green:#91d6ae;--danger:#ff9a9a;--radius:18px;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top right,#263c48 0,transparent 42%),var(--bg);color:var(--text);min-height:100vh}button,input,textarea{font:inherit}button{cursor:pointer}.wrap{width:min(1080px,calc(100% - 32px));margin:0 auto;padding:34px 0 60px}.top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:26px}.eyebrow{color:var(--accent);font-size:.75rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.top h1{font-size:clamp(1.8rem,4vw,3rem);line-height:1.05;margin:8px 0}.top p{color:var(--muted);margin:8px 0 0}.mark{width:54px;height:54px;border:1px solid #566b77;border-radius:16px;display:grid;place-items:center;font-size:1.6rem;color:var(--accent);flex:none}.layout{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(290px,.75fr);gap:18px;align-items:start}.panel{background:linear-gradient(145deg,rgba(34,50,62,.96),rgba(25,38,48,.98));border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:0 16px 44px #0002}.panel h2{font-size:1.05rem;margin:0 0 18px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{display:flex;flex-direction:column;gap:7px}.field.full{grid-column:1/-1}label{font-size:.82rem;color:var(--muted);font-weight:650}input,textarea{width:100%;border:1px solid var(--line);background:#111d26;color:var(--text);border-radius:11px;padding:12px 13px;outline:none}input:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px #f3b54422}textarea{resize:vertical;min-height:78px}.hint{font-size:.75rem;color:var(--muted);margin-top:3px}.section{border-top:1px solid var(--line);padding-top:18px;margin-top:20px}.section h3{font-size:.88rem;color:var(--accent);margin:0 0 14px}.summary{position:sticky;top:16px}.total-label{font-size:.8rem;color:var(--muted)}.total{font-size:clamp(2.3rem,5vw,3.5rem);font-weight:850;letter-spacing:-.05em;margin:5px 0 18px;color:var(--green);font-variant-numeric:tabular-nums}.breakdown{display:grid;gap:11px}.line{display:flex;justify-content:space-between;gap:14px;color:var(--muted);font-size:.9rem}.line strong{color:var(--text);font-variant-numeric:tabular-nums}.line.final{border-top:1px solid var(--line);padding-top:13px;margin-top:3px;font-size:1rem}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:22px}.btn{border:1px solid var(--line);border-radius:11px;padding:11px 15px;background:var(--panel2);color:var(--text);font-weight:750}.btn.primary{background:var(--accent);border-color:var(--accent);color:#18212a}.btn:hover{filter:brightness(1.08)}.btn:disabled{opacity:.5;cursor:not-allowed}.saved{margin-top:18px}.saved-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}.saved-head h2{margin:0}.job-list{display:grid;gap:9px}.job{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);border-radius:12px;background:#111d26}.job-title{font-weight:750}.job-meta{font-size:.76rem;color:var(--muted);margin-top:4px}.job-amount{font-weight:850;white-space:nowrap}.job button{border:0;background:transparent;color:var(--danger);padding:5px}.empty{color:var(--muted);font-size:.88rem;padding:12px 0}.foot{margin-top:18px;color:var(--muted);font-size:.76rem;line-height:1.5}.notice{min-height:1.2em;color:var(--green);font-size:.82rem;margin-top:10px}
+    @media(max-width:760px){.layout{grid-template-columns:1fr}.summary{position:static}.top{align-items:flex-start}.mark{width:44px;height:44px}.wrap{padding-top:24px}}
+    @media(max-width:430px){.fields{grid-template-columns:1fr}.field.full{grid-column:auto}.panel{padding:17px}.wrap{width:calc(100% - 22px)}}
+    @media print{body{background:#fff;color:#111}.wrap{width:100%;padding:0}.panel{background:#fff;color:#111;border:1px solid #bbb;box-shadow:none}.summary{position:static}.total,.line strong{color:#111}input,textarea,.actions,.saved,.mark{display:none!important}.top p,.total-label,.line,.foot{color:#444}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <div><div class="eyebrow">Narzędzie warsztatowe · wersja 1.0</div><h1>Kalkulator zlecenia</h1><p>Robocizna, kilometry i dodatkowe koszty — w jednym miejscu.</p></div>
+      <div class="mark" aria-hidden="true">⚒</div>
+    </header>
+    <div class="layout">
+      <section class="panel" aria-labelledby="details-title">
+        <h2 id="details-title">Dane zlecenia</h2>
+        <div class="fields">
+          <div class="field full"><label for="client">Klient / nazwa zlecenia</label><input id="client" maxlength="80" placeholder="Np. Okna — Szklarska Poręba"></div>
+          <div class="field"><label for="start">Wyjazd z domu</label><input id="start" type="time" value="08:00"></div>
+          <div class="field"><label for="end">Wyjazd z pracy</label><input id="end" type="time" value="17:00"></div>
+          <div class="field"><label for="break">Przerwa niepłatna (min)</label><input id="break" type="number" min="0" max="720" step="5" value="0"></div>
+          <div class="field"><label for="km">Łączny dystans (km)</label><input id="km" type="number" min="0" max="10000" step="1" value="40"></div>
+        </div>
+        <div class="section"><h3>Stawki i koszty</h3>
+          <div class="fields">
+            <div class="field"><label for="rate">Robocizna (zł / h)</label><input id="rate" type="number" min="0" max="100000" step="0.5" value="35"></div>
+            <div class="field"><label for="kmrate">Dojazd (zł / km)</label><input id="kmrate" type="number" min="0" max="10000" step="0.1" value="1"></div>
+            <div class="field"><label for="extra">Dodatkowe koszty (zł)</label><input id="extra" type="number" min="0" max="10000000" step="0.01" value="0"></div>
+            <div class="field"><label for="date">Data</label><input id="date" type="date"></div>
+            <div class="field full"><label for="notes">Notatki</label><textarea id="notes" maxlength="1000" placeholder="Zakres prac, materiały, ustalenia…"></textarea></div>
+          </div>
+        </div>
+        <div class="actions"><button class="btn primary" id="save">Zapisz zlecenie</button><button class="btn" id="reset" type="button">Wyczyść formularz</button><button class="btn" id="print" type="button">Drukuj</button></div>
+        <div class="notice" id="notice" role="status" aria-live="polite"></div>
+      </section>
+      <aside class="panel summary" aria-live="polite" aria-label="Podsumowanie kosztów">
+        <div class="total-label">Wartość zlecenia</div><div class="total" id="total">0,00 zł</div>
+        <div class="breakdown">
+          <div class="line"><span>Czas rozliczeniowy</span><strong id="hours">0 h</strong></div>
+          <div class="line"><span>Robocizna</span><strong id="labor">0,00 zł</strong></div>
+          <div class="line"><span>Dojazd</span><strong id="travel">0,00 zł</strong></div>
+          <div class="line"><span>Dodatkowe koszty</span><strong id="extras">0,00 zł</strong></div>
+          <div class="line final"><span>Razem</span><strong id="grand">0,00 zł</strong></div>
+        </div>
+        <p class="foot">Obliczenia są orientacyjne. Czas liczony jest od wyjazdu z domu do wyjazdu z pracy, z odjęciem wpisanej przerwy. Kilometry wpisuj jako łączny dystans. Dane zostają w pamięci tej przeglądarki — nie są wysyłane na serwer.</p>
+      </aside>
+    </div>
+    <section class="panel saved" aria-labelledby="saved-title">
+      <div class="saved-head"><h2 id="saved-title">Zapisane zlecenia</h2><button class="btn" id="export" type="button">Eksport CSV</button></div>
+      <div class="job-list" id="jobs"><div class="empty">Nie zapisano jeszcze żadnego zlecenia.</div></div>
+    </section>
+  </main>
+  <script>
+    (() => {
+      'use strict';
+      const $ = id => document.getElementById(id);
+      const fields = ['client','start','end','break','km','rate','kmrate','extra','date','notes'];
+      const money = value => new Intl.NumberFormat('pl-PL',{style:'currency',currency:'PLN'}).format(Number.isFinite(value)?value:0);
+      const number = id => { const n = Number($(id).value); return Number.isFinite(n) ? n : 0; };
+      const safeStore = {
+        read(){ try { const v = JSON.parse(localStorage.getItem('kalkulator-zlecenia-v1') || '[]'); return Array.isArray(v) ? v : []; } catch { return []; } },
+        write(items){ try { localStorage.setItem('kalkulator-zlecenia-v1',JSON.stringify(items)); return true; } catch { return false; } }
+      };
+      let jobs = safeStore.read();
+      const calculate = () => {
+        const start = $('start').value, end = $('end').value;
+        let minutes = 0;
+        if (start && end) { const [sh,sm] = start.split(':').map(Number), [eh,em] = end.split(':').map(Number); minutes = (eh*60+em)-(sh*60+sm); if (minutes < 0) minutes += 1440; }
+        minutes = Math.max(0,minutes-Math.min(720,Math.max(0,number('break'))));
+        const hours = minutes/60, labor = hours*Math.max(0,number('rate')), travel = Math.max(0,number('km'))*Math.max(0,number('kmrate')), extras = Math.max(0,number('extra')), total = labor+travel+extras;
+        $('hours').textContent = `${hours.toLocaleString('pl-PL',{maximumFractionDigits:2})} h`;
+        $('labor').textContent = money(labor); $('travel').textContent = money(travel); $('extras').textContent = money(extras);
+        $('total').textContent = money(total); $('grand').textContent = money(total);
+        return {hours,labor,travel,extras,total};
+      };
+      const getForm = () => ({id: (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`),client:$('client').value.trim() || 'Bez nazwy',date:$('date').value,start:$('start').value,end:$('end').value,breakMinutes:number('break'),km:number('km'),rate:number('rate'),kmrate:number('kmrate'),extra:number('extra'),notes:$('notes').value.trim(),...calculate()});
+      const render = () => {
+        const root = $('jobs'); root.replaceChildren();
+        if (!jobs.length) { const empty=document.createElement('div'); empty.className='empty'; empty.textContent='Nie zapisano jeszcze żadnego zlecenia.'; root.append(empty); return; }
+        [...jobs].reverse().forEach(job => {
+          const row=document.createElement('article'); row.className='job';
+          const info=document.createElement('div'); const title=document.createElement('div'); title.className='job-title'; title.textContent=job.client;
+          const meta=document.createElement('div'); meta.className='job-meta'; meta.textContent=[job.date,`${job.hours.toLocaleString('pl-PL',{maximumFractionDigits:2})} h`,`${job.km} km`].filter(Boolean).join(' · ');
+          info.append(title,meta); const amount=document.createElement('div'); amount.className='job-amount'; amount.textContent=money(job.total);
+          const del=document.createElement('button'); del.type='button'; del.textContent='Usuń'; del.setAttribute('aria-label',`Usuń zlecenie ${job.client}`); del.addEventListener('click',()=>{jobs=jobs.filter(x=>x.id!==job.id);safeStore.write(jobs);render();});
+          row.append(info,amount,del); root.append(row);
+        });
+      };
+      fields.forEach(id => $(id).addEventListener('input',calculate));
+      $('save').addEventListener('click',()=>{
+        if (!$('start').value || !$('end').value) { $('notice').textContent='Wpisz godzinę wyjazdu z domu i wyjazdu z pracy.'; return; }
+        const item=getForm(); jobs.push(item);
+        if (!safeStore.write(jobs)) { jobs.pop(); $('notice').textContent='Nie udało się zapisać danych. Sprawdź miejsce w pamięci przeglądarki.'; return; }
+        render(); $('notice').textContent='Zlecenie zapisane na tym urządzeniu.';
+      });
+      $('reset').addEventListener('click',()=>{fields.forEach(id=>{ if(id==='start') $(id).value='08:00'; else if(id==='end') $(id).value='17:00'; else if(id==='break'||id==='extra') $(id).value='0'; else if(id==='km') $(id).value='40'; else if(id==='rate') $(id).value='35'; else if(id==='kmrate') $(id).value='1'; else $(id).value=''; }); $('notice').textContent='Formularz wyczyszczony.'; calculate();});
+      $('print').addEventListener('click',()=>window.print());
+      $('export').addEventListener('click',()=>{
+        if(!jobs.length){$('notice').textContent='Brak zleceń do eksportu.';return;}
+        const cols=['Klient','Data','Godziny','Kilometry','Stawka godzinowa','Stawka za km','Robocizna','Dojazd','Dodatkowe koszty','Razem','Notatki'];
+        const rows=jobs.map(j=>[j.client,j.date,j.hours,j.km,j.rate,j.kmrate,j.labor,j.travel,j.extras,j.total,j.notes]);
+        const csv=[cols,...rows].map(row=>row.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(';')).join('\r\n');
+        const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='zlecenia.csv';a.click();URL.revokeObjectURL(url);$('notice').textContent='Plik CSV został przygotowany.';
+      });
+      if(!$('date').value) $('date').value=new Date().toISOString().slice(0,10);
+      calculate();render();
+    })();
+  </script>
+</body>
+</html>
